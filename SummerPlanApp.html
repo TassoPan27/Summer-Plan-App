@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Summer Plan"/>
+<title>Summer 2026 Plan — Tasso</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --bg2: #f8f8f7;
+    --bg3: #f1f0ec;
+    --text: #1a1a18;
+    --text2: #6b6b67;
+    --text3: #9e9e9a;
+    --border: rgba(0,0,0,0.1);
+    --border2: rgba(0,0,0,0.18);
+    --radius: 10px;
+    --radius-lg: 14px;
+    --blue: #2563eb;
+    --blue-bg: #eff6ff;
+    --blue-border: #bfdbfe;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+    --purple-border: #ddd6fe;
+    --green: #059669;
+    --green-bg: #ecfdf5;
+    --green-border: #a7f3d0;
+    --red: #dc2626;
+    --red-bg: #fff5f5;
+    --red-border: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg2: #242422;
+      --bg3: #2c2c2a;
+      --text: #f0ede8;
+      --text2: #a0a09c;
+      --text3: #6e6e6a;
+      --border: rgba(255,255,255,0.1);
+      --border2: rgba(255,255,255,0.18);
+      --blue-bg: #1e2d4a;
+      --blue-border: #1e3a6e;
+      --purple-bg: #2a1f4a;
+      --purple-border: #3d2a72;
+      --green-bg: #0f2d20;
+      --green-border: #0a4a2a;
+      --red-bg: #2d1414;
+      --red-border: #4a1a1a;
+    }
+  }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  body { -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  #root { min-height: 100vh; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; }
+  a { color: var(--blue); }
+  .app { max-width: 680px; margin: 0 auto; padding: 1.25rem 1rem 5rem; }
+
+  /* Header */
+  .header { margin-bottom: 1.25rem; }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+  .header-title { font-size: 22px; font-weight: 600; color: var(--text); }
+  .header-sub { font-size: 13px; color: var(--text2); margin-top: 2px; }
+  .header-pct { font-size: 22px; font-weight: 600; color: var(--text); text-align: right; }
+  .header-pct-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .progress-bar { height: 6px; background: var(--bg3); border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 999px; transition: width 0.4s ease; }
+
+  /* Tab cards */
+  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-bottom: 1.25rem; }
+  .tab-card { border-radius: var(--radius); padding: 10px 8px; text-align: left; transition: all 0.15s; border: 1px solid var(--border); background: var(--bg); }
+  .tab-card.active { border-width: 2px; }
+  .tab-label { font-size: 13px; font-weight: 600; margin-bottom: 1px; }
+  .tab-sub { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+  .tab-bar { height: 3px; background: var(--bg3); border-radius: 999px; overflow: hidden; margin-bottom: 4px; }
+  .tab-fill { height: 100%; border-radius: 999px; transition: width 0.4s ease; }
+  .tab-count { font-size: 11px; color: var(--text2); }
+
+  /* Checklist */
+  .group { margin-bottom: 1.25rem; }
+  .group-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+  .group-title { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .group-count { font-size: 12px; color: var(--text2); }
+  .group-count.done { font-weight: 600; }
+  .item-list { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .item { display: flex; align-items: flex-start; gap: 11px; padding: 11px 13px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; -webkit-tap-highlight-color: transparent; }
+  .item:last-child { border-bottom: none; }
+  .item:active { opacity: 0.75; }
+  .checkbox { width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0; margin-top: 1px; border: 1.5px solid var(--border2); background: transparent; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .checkbox.checked { border-width: 2px; }
+  .checkbox svg { display: block; }
+  .item-body { flex: 1; }
+  .item-text { font-size: 14px; color: var(--text); line-height: 1.45; }
+  .item-text.done { text-decoration: line-through; color: var(--text2); }
+  .item-note { font-size: 12px; color: var(--text2); line-height: 1.4; margin-top: 3px; }
+
+  /* Salary table */
+  .section-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 0.75rem; }
+  .table-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead td, th { padding: 8px 11px; font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; background: var(--bg2); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody td { padding: 9px 11px; color: var(--text); vertical-align: middle; }
+  .track-badge { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px; display: inline-block; }
+  .remote-high { color: var(--blue); }
+  .remote-vhigh { color: var(--green); }
+  .salary-num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .salary-bonus { color: var(--text2); white-space: nowrap; }
+
+  /* Resources */
+  .resource-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 1.5rem; }
+  .resource-card { display: flex; align-items: center; gap: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 13px; }
+  .resource-info { flex: 1; }
+  .resource-name-row { display: flex; align-items: center; gap: 7px; margin-bottom: 2px; }
+  .resource-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .priority-badge { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
+  .resource-detail { font-size: 12px; color: var(--text2); }
+  .resource-link { font-size: 12px; color: var(--blue); text-decoration: none; padding: 4px 10px; border: 1px solid var(--blue-border); border-radius: var(--radius); background: var(--blue-bg); flex-shrink: 0; white-space: nowrap; }
+
+  /* Interview */
+  .tip-box { border-radius: var(--radius-lg); padding: 13px 15px; margin-bottom: 0.75rem; }
+  .tip-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .tip-text { font-size: 13px; line-height: 1.65; font-style: italic; color: var(--text); }
+  .q-list { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .q-item { display: flex; gap: 10px; padding: 10px 13px; border-bottom: 1px solid var(--border); }
+  .q-item:last-child { border-bottom: none; }
+  .q-num { font-size: 11px; font-weight: 600; color: var(--text2); min-width: 18px; padding-top: 1px; }
+  .q-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+  /* Section spacing */
+  .section { margin-bottom: 1.75rem; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const SECTIONS = {
+  june: {
+    label: "June", sublabel: "Foundation",
+    color: "#2563eb", lightColor: "var(--blue-bg)", borderColor: "var(--blue-border)",
+    groups: [
+      { title: "Resume & LinkedIn — Week 1 (June 1–7)", items: [
+        { id: "j1", text: "Fix Evans Scholar date typo", note: "currently reads Sep 2023–May 2023, should be May 2024" },
+        { id: "j2", text: "Reorder resume sections", note: "Education → Skills → Projects → Involvement → Experience" },
+        { id: "j3", text: "Expand Skills section", note: "add Matplotlib, NumPy, Jupyter, Git/GitHub, Tableau" },
+        { id: "j4", text: "Quantify ICON consulting bullets", note: "name the tools, client industry, and measurable outcome" },
+        { id: "j5", text: "Create two resume versions", note: "one data science-focused, one business/analyst-focused" },
+        { id: "j6", text: "Polish LinkedIn profile", note: "photo, headline, about section, link GitHub once ready" },
+        { id: "j7", text: "Connect with 10 UIUC alumni in data/analytics on LinkedIn", note: "send a specific message — not a generic connection request" },
+      ]},
+      { title: "GitHub & SQL — Week 1–2 (June 1–14)", items: [
+        { id: "j8", text: "Create a GitHub account if not already done" },
+        { id: "j9", text: "Upload existing projects (used car + academic performance)", note: "write a clean README for each explaining problem, approach, results" },
+        { id: "j10", text: "Complete Kaggle Learn — Pandas course", note: "free, 1–2 days" },
+        { id: "j11", text: "Complete Kaggle Learn — Feature Engineering course", note: "free, directly applies to Airbnb project" },
+        { id: "j12", text: "Complete Codecademy SQL fundamentals", note: "free tier — 1 week of evenings is enough" },
+      ]},
+      { title: "Airbnb Project — Start (Week 2–3, June 8–21)", items: [
+        { id: "j13", text: "Download Barcelona/Chicago data from insideairbnb.com", note: "listings.csv" },
+        { id: "j14", text: "Clean dataset", note: "convert price strings, handle nulls, remove outliers" },
+        { id: "j15", text: "Exploratory Data Analysis (EDA)", note: "document every decision in a Jupyter notebook" },
+        { id: "j16", text: "Engineer features", note: "distance to center, amenities count, superhost status, review scores" },
+      ]},
+      { title: "Research & Mindset (Ongoing in June)", items: [
+        { id: "j17", text: "Build a company target spreadsheet", note: "columns: Company, Role Type, Tech Stack, Remote Policy, App Open Date" },
+        { id: "j18", text: "Identify 20 target companies across all three tracks", note: "DS, Analyst, Finance/Consulting" },
+        { id: "j19", text: "Read 2–3 job descriptions per target role", note: "note recurring skills and keywords" },
+        { id: "j20", text: "Decide if actuary path interests you", note: "if yes, download SOA Exam P materials and start 2 hrs/week" },
+      ]},
+    ]
+  },
+  july: {
+    label: "July", sublabel: "Build & Apply",
+    color: "#7c3aed", lightColor: "var(--purple-bg)", borderColor: "var(--purple-border)",
+    groups: [
+      { title: "Airbnb Project — Finish & Deploy (July 1–14)", items: [
+        { id: "jl1", text: "Train XGBoost or Random Forest regression model", note: "step up from your existing linear regression projects" },
+        { id: "jl2", text: "Run SHAP value analysis", note: "shows which features drive price — a highly employable skill" },
+        { id: "jl3", text: "Build Streamlit dashboard", note: "neighborhood filter, map of listings by price, live price predictor" },
+        { id: "jl4", text: "Deploy on Streamlit Community Cloud (free)", note: "get a live public URL for your resume and LinkedIn" },
+        { id: "jl5", text: "Add to GitHub with full README", note: "include R² score, dataset size, tools used, and a screenshot" },
+        { id: "jl6", text: "Add bullet to resume", note: "'Built end-to-end Airbnb pricing model (50K+ records), deployed interactive Streamlit dashboard'" },
+      ]},
+      { title: "Second Project — FRED Economic Dashboard (July 7–21)", items: [
+        { id: "jl7", text: "Pull data from FRED API (free)", note: "unemployment, inflation (CPI), GDP, interest rates" },
+        { id: "jl8", text: "Build Plotly or Matplotlib visualizations of indicator trends" },
+        { id: "jl9", text: "Write a short analysis section in the README", note: "shows economic thinking, not just coding" },
+        { id: "jl10", text: "Deploy or publish notebook on GitHub" },
+      ]},
+      { title: "Certifications (July — ongoing)", items: [
+        { id: "jl11", text: "Start Google Advanced Data Analytics Certificate (Coursera)", note: "~$50/mo, 6–8 weeks if you push" },
+        { id: "jl12", text: "Complete at least 3 modules before August 1" },
+      ]},
+      { title: "Applications — Start Now (July 7+)", items: [
+        { id: "jl13", text: "Begin submitting applications — 5 per week minimum", note: "do not wait for projects to be 'perfect'" },
+        { id: "jl14", text: "Apply to rotational analyst programs", note: "Capital One, Discover, Northwestern Mutual, Allstate, Walgreens, Morningstar" },
+        { id: "jl15", text: "Apply to data/business analyst roles at mid-size tech and fintech companies" },
+        { id: "jl16", text: "Apply to boutique consulting firms with Chicago presence", note: "West Monroe Partners, Huron Consulting, Navigant, A.T. Kearney" },
+        { id: "jl17", text: "Apply to supply chain/operations analyst roles", note: "Amazon, Target, Caterpillar, Boeing, Grainger" },
+        { id: "jl18", text: "Set up job alerts on LinkedIn and Indeed", note: "keywords: data analyst, business analyst, quantitative analyst, junior data scientist" },
+      ]},
+      { title: "Kaggle (July)", items: [
+        { id: "jl19", text: "Join one active Kaggle competition", note: "mid-pack finish is fine — it still counts" },
+        { id: "jl20", text: "Complete Kaggle Learn — ML Explainability (SHAP)", note: "ties directly into your Airbnb project" },
+        { id: "jl21", text: "Create a public Kaggle profile", note: "link it from LinkedIn and your resume" },
+      ]},
+    ]
+  },
+  august: {
+    label: "August", sublabel: "Network & Close",
+    color: "#059669", lightColor: "var(--green-bg)", borderColor: "var(--green-border)",
+    groups: [
+      { title: "Networking (All of August)", items: [
+        { id: "a1", text: "Reach out to 15 UIUC alumni in data, analytics, or finance", note: "ask for a 15-min coffee chat, not a job" },
+        { id: "a2", text: "Attend at least 1 virtual career fair or info session", note: "UIUC often runs these in late August/early September" },
+        { id: "a3", text: "Follow up with any July connections you haven't heard from", note: "one polite follow-up after 2 weeks is expected, not pushy" },
+        { id: "a4", text: "Connect with recruiters at target companies on LinkedIn", note: "personalized note referencing their company specifically" },
+      ]},
+      { title: "Interview Prep (August)", items: [
+        { id: "a5", text: "Practice 10 SQL query problems on LeetCode (Easy/Medium)", note: "filter by 'Database' tag" },
+        { id: "a6", text: "Prepare answers to 5 behavioral questions using STAR format", note: "Tell me about a time you used data... / worked under pressure... / led a team..." },
+        { id: "a7", text: "Prepare 2-minute walkthrough for each GitHub project", note: "problem → approach → result → what you'd do differently" },
+        { id: "a8", text: "Research top 10 target companies deeply", note: "recent news, products, tech stack, culture" },
+        { id: "a9", text: "Do at least 2 mock interviews", note: "use Pramp, a friend, or record yourself" },
+      ]},
+      { title: "Certifications — Finish & Add", items: [
+        { id: "a10", text: "Complete Google Advanced Data Analytics Certificate", note: "add to LinkedIn and resume upon completion" },
+        { id: "a11", text: "Begin AWS Cloud Practitioner prep", note: "Stephane Maarek's Udemy course (~$15 on sale) is the standard resource" },
+      ]},
+      { title: "Before You Return to Campus", items: [
+        { id: "a12", text: "4 projects on GitHub (2 existing + Airbnb + FRED)", note: "each with a polished README" },
+        { id: "a13", text: "At least 20 applications submitted" },
+        { id: "a14", text: "LinkedIn fully polished with GitHub linked" },
+        { id: "a15", text: "Both resume versions finalized and reviewed", note: "ask a professor or career center contact for feedback" },
+        { id: "a16", text: "At least 3 informational interviews completed" },
+        { id: "a17", text: "Know your answer to 'Why no internship?' cold", note: "'I studied abroad in Spain and used the summer to build my portfolio' is a complete answer" },
+      ]},
+    ]
+  },
+  ongoing: {
+    label: "Habits", sublabel: "Every week",
+    color: "#dc2626", lightColor: "var(--red-bg)", borderColor: "var(--red-border)",
+    groups: [
+      { title: "Weekly habits — build these into your routine", items: [
+        { id: "o1", text: "Apply to 5+ roles per week starting July 7", note: "quantity matters — do not apply to 3 jobs and wait" },
+        { id: "o2", text: "Check job alert emails daily", note: "new grad roles fill fast" },
+        { id: "o3", text: "Post one GitHub commit per week minimum", note: "keeps your profile active and green" },
+        { id: "o4", text: "Spend 30 mins on SQL problems each week", note: "LeetCode, Mode, or HackerRank" },
+        { id: "o5", text: "Read one data science or industry article per week", note: "Towards Data Science, Stratechery, or Morning Brew" },
+        { id: "o6", text: "Update company tracker spreadsheet weekly", note: "status, follow-up dates, contacts" },
+        { id: "o7", text: "Exam P study (actuary track only)", note: "2–3 hours per week is enough to make real progress" },
+      ]},
+    ]
+  }
+};
+
+const SALARY_DATA = [
+  { role: "Data Scientist",        range: "$85K–$110K", bonus: "$90K–$120K", remote: "High",      track: "A" },
+  { role: "Product Analyst (Tech)",range: "$75K–$110K", bonus: "$80K–$120K", remote: "Very High", track: "A" },
+  { role: "Risk Analyst",          range: "$70K–$100K", bonus: "$80K–$115K", remote: "High",      track: "C" },
+  { role: "Business / Data Analyst",range:"$65K–$90K",  bonus: "$70K–$100K", remote: "High",      track: "B" },
+  { role: "Consulting (Boutique)", range: "$65K–$95K",  bonus: "$80K–$115K", remote: "Medium",    track: "C" },
+  { role: "Financial Analyst",     range: "$65K–$85K",  bonus: "$75K–$100K", remote: "Medium",    track: "C" },
+  { role: "Supply Chain Analyst",  range: "$60K–$85K",  bonus: "$65K–$90K",  remote: "Medium",    track: "B" },
+  { role: "Market Research",       range: "$55K–$80K",  bonus: "$60K–$85K",  remote: "High",      track: "B" },
+  { role: "Actuary (entry)",       range: "$65K–$80K",  bonus: "$70K–$90K",  remote: "Very High", track: "C" },
+];
+
+const RESOURCES = [
+  { name: "Kaggle Learn",            what: "Pandas, ML, SHAP",          cost: "Free",      priority: "Do First", url: "https://www.kaggle.com/learn" },
+  { name: "Codecademy SQL",          what: "SQL fundamentals",           cost: "Free tier", priority: "Do First", url: "https://www.codecademy.com/learn/learn-sql" },
+  { name: "Inside Airbnb",           what: "Dataset for project 1",      cost: "Free",      priority: "Do First", url: "http://insideairbnb.com/get-the-data/" },
+  { name: "FRED API",                what: "Economic data, project 2",   cost: "Free",      priority: "High",     url: "https://fred.stlouisfed.org/" },
+  { name: "Google Advanced Analytics",what:"Python, ML cert",            cost: "~$50/mo",   priority: "High",     url: "https://www.coursera.org/professional-certificates/google-advanced-data-analytics" },
+  { name: "Streamlit Cloud",         what: "Free dashboard deployment",  cost: "Free",      priority: "High",     url: "https://streamlit.io/cloud" },
+  { name: "LeetCode Database",       what: "SQL interview prep",         cost: "Free tier", priority: "High",     url: "https://leetcode.com/problemset/database/" },
+  { name: "AWS Cloud Practitioner",  what: "Cloud cert — differentiator",cost: "~$100 exam",priority: "Medium",   url: "https://aws.amazon.com/certification/certified-cloud-practitioner/" },
+  { name: "Pramp",                   what: "Free mock interviews",       cost: "Free",      priority: "August",   url: "https://www.pramp.com/" },
+];
+
+const ALL_IDS = Object.values(SECTIONS).flatMap(s => s.groups.flatMap(g => g.items.map(i => i.id)));
+
+const PRIORITY_COLORS = {
+  "Do First": { bg: "var(--green-bg)",   text: "#059669" },
+  "High":     { bg: "var(--blue-bg)",    text: "#2563eb" },
+  "Medium":   { bg: "var(--purple-bg)", text: "#7c3aed" },
+  "August":   { bg: "#fff7ed",           text: "#c2410c" },
+};
+const TRACK_COLORS = {
+  A: { bg: "var(--blue-bg)",   text: "#2563eb" },
+  B: { bg: "var(--purple-bg)", text: "#7c3aed" },
+  C: { bg: "var(--green-bg)",  text: "#059669" },
+};
+
+function App() {
+  const [tab, setTab] = useState("june");
+  const [checked, setChecked] = useState({});
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("tasso_plan_v1");
+      if (saved) setChecked(JSON.parse(saved));
+    } catch {}
+    setReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    try { localStorage.setItem("tasso_plan_v1", JSON.stringify(checked)); } catch {}
+  }, [checked, ready]);
+
+  function toggle(id) { setChecked(p => ({ ...p, [id]: !p[id] })); }
+
+  function secProg(key) {
+    const ids = SECTIONS[key].groups.flatMap(g => g.items.map(i => i.id));
+    const done = ids.filter(id => checked[id]).length;
+    return { done, total: ids.length, pct: ids.length ? Math.round(done / ids.length * 100) : 0 };
+  }
+
+  const totalDone = ALL_IDS.filter(id => checked[id]).length;
+  const totalPct = Math.round(totalDone / ALL_IDS.length * 100);
+  const sec = SECTIONS[tab];
+
+  return (
+    <div className="app">
+      {/* Header */}
+      <div className="header">
+        <div className="header-top">
+          <div>
+            <div className="header-title">Summer 2026 Plan</div>
+            <div className="header-sub">Tasso Panousopoulos · June 1 – August 31</div>
+          </div>
+          <div>
+            <div className="header-pct">{totalPct}%</div>
+            <div className="header-pct-sub">{totalDone}/{ALL_IDS.length} done</div>
+          </div>
+        </div>
+        <div className="progress-bar">
+          <div className="progress-fill" style={{ width: totalPct + "%", background: "#2563eb" }} />
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="tabs">
+        {Object.entries(SECTIONS).map(([key, s]) => {
+          const { done, total, pct } = secProg(key);
+          const active = tab === key;
+          return (
+            <button key={key} className={"tab-card" + (active ? " active" : "")}
+              style={{ borderColor: active ? s.color : undefined, background: active ? s.lightColor : undefined }}
+              onClick={() => setTab(key)}>
+              <div className="tab-label" style={{ color: active ? s.color : "var(--text)" }}>{s.label}</div>
+              <div className="tab-sub">{s.sublabel}</div>
+              <div className="tab-bar">
+                <div className="tab-fill" style={{ width: pct + "%", background: s.color }} />
+              </div>
+              <div className="tab-count">{done}/{total}</div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Checklist */}
+      <div className="section">
+        {sec.groups.map((group, gi) => {
+          const done = group.items.filter(i => checked[i.id]).length;
+          return (
+            <div key={gi} className="group">
+              <div className="group-header">
+                <div className="group-title">{group.title}</div>
+                <div className={"group-count" + (done === group.items.length ? " done" : "")}
+                  style={{ color: done === group.items.length ? sec.color : undefined }}>
+                  {done}/{group.items.length}
+                </div>
+              </div>
+              <div className="item-list">
+                {group.items.map((item) => {
+                  const on = !!checked[item.id];
+                  return (
+                    <div key={item.id} className="item"
+                      style={{ background: on ? sec.lightColor : undefined }}
+                      onClick={() => toggle(item.id)}>
+                      <div className={"checkbox" + (on ? " checked" : "")}
+                        style={{ borderColor: on ? sec.color : undefined, background: on ? sec.color : undefined }}>
+                        {on && (
+                          <svg width="11" height="8" viewBox="0 0 11 8" fill="none">
+                            <path d="M1 4L4 7L10 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                      </div>
+                      <div className="item-body">
+                        <div className={"item-text" + (on ? " done" : "")}>{item.text}</div>
+                        {item.note && <div className="item-note">{item.note}</div>}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Salary */}
+      <div className="section">
+        <div className="section-title">Salary reference — entry level 2026</div>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style={{textAlign:"left"}}>Role</th>
+                <th style={{textAlign:"left"}}>Base range</th>
+                <th style={{textAlign:"left"}}>w/ bonus</th>
+                <th style={{textAlign:"left"}}>Remote</th>
+              </tr>
+            </thead>
+            <tbody>
+              {SALARY_DATA.map((r, i) => {
+                const tc = TRACK_COLORS[r.track];
+                return (
+                  <tr key={i}>
+                    <td>
+                      <span className="track-badge" style={{ background: tc.bg, color: tc.text }}>
+                        {r.track}
+                      </span>
+                      {r.role}
+                    </td>
+                    <td className="salary-num">{r.range}</td>
+                    <td className="salary-bonus">{r.bonus}</td>
+                    <td className={r.remote === "Very High" ? "remote-vhigh" : r.remote === "High" ? "remote-high" : ""}>{r.remote}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Resources */}
+      <div className="section">
+        <div className="section-title">Resources</div>
+        <div className="resource-list">
+          {RESOURCES.map((r, i) => {
+            const pc = PRIORITY_COLORS[r.priority] || PRIORITY_COLORS["Medium"];
+            return (
+              <div key={i} className="resource-card">
+                <div className="resource-info">
+                  <div className="resource-name-row">
+                    <span className="resource-name">{r.name}</span>
+                    <span className="priority-badge" style={{ background: pc.bg, color: pc.text }}>{r.priority}</span>
+                  </div>
+                  <div className="resource-detail">{r.what} · {r.cost}</div>
+                </div>
+                <a href={r.url} className="resource-link" target="_blank" rel="noopener">Open →</a>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Interview prep */}
+      <div className="section">
+        <div className="section-title">Interview prep</div>
+        <div className="tip-box" style={{ background: "var(--blue-bg)", border: "1px solid var(--blue-border)" }}>
+          <div className="tip-label" style={{ color: "#2563eb" }}>Your answer to "Why no internship?"</div>
+          <div className="tip-text">"I spent my junior year studying abroad in Spain, which was an intentional decision. This summer I focused on building a strong technical portfolio — two deployed data science projects on GitHub, the Google Advanced Analytics certification, and SQL and ML fundamentals. I'm confident the portfolio reflects the skills you'd expect from an internship candidate."</div>
+        </div>
+        <div className="q-list">
+          {[
+            "Tell me about a time you used data to make a decision or recommendation.",
+            "Describe a time you worked on a team with a difficult dynamic.",
+            "Tell me about a project where things didn't go as planned. What did you do?",
+            "Give an example of a time you had to learn something quickly.",
+            "Describe your most technically challenging project.",
+          ].map((q, i, arr) => (
+            <div key={i} className="q-item" style={{ borderBottom: i < arr.length - 1 ? "1px solid var(--border)" : "none" }}>
+              <span className="q-num">{i + 1}.</span>
+              <span className="q-text">{q}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
+</html>
